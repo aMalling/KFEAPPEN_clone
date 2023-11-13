@@ -36,7 +36,7 @@
           <p class=" px-2 text-sm text-kfe-primary ">
             Team A:
           </p>
-          <template v-for=" item  in  datatable ">
+          <template v-for="  item   in   datatable  ">
             <li v-if=" item.Diagnosegruppe === showTeam && item.Status_ID >= 4 && item.Status_ID <= 5 "
               class="  px-2 text-sm border-kfe-secondary hover:border-b-2 hover:border-t-2 hover:border-r-2 hover:cursor-pointer truncate"
               @click=" onLiCicked(item.KFE_Nr)">
@@ -46,7 +46,7 @@
           <p class=" px-2 text-sm text-kfe-primary ">
             Fælles:
           </p>
-          <template v-for="                 item                in                  datatable                  ">
+          <template v-for="                  item                 in                   datatable                   ">
             <li v-if=" item.Diagnosegruppe === 'Fælles' && item.Status_ID >= 4 && item.Status_ID <= 5 " class=" truncate px-2
                 text-sm border-kfe-secondary hover:border-b-2 hover:border-t-2 hover:border-r-2 hover:cursor-pointer"
               @click=" onLiCicked(item.KFE_Nr)">
@@ -90,7 +90,7 @@
       </button>
     </div>
     <div class="flex-col col-start-5  mb-32">
-      <img src="..\assets\KFE_logo2.png" width="250" height="83" />
+      <img src=".\assets\KFE_logo2.png" width="250" height="83" />
       <div class="flex items-center justify-start text-center">
         <i class="fa-solid fa-magnifying-glass text-gray-500"></i>
         <input autofocus id="selected"
