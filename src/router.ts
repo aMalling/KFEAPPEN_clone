@@ -71,7 +71,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/Standardbehandling",
     name: "Standardbehandling",
-    component: () => import("./views/Standardbehandling.vue"),
+    component: () => import("./views/StandardBehandling.vue"),
   },
   {
     path: "/:notFound",
@@ -92,7 +92,7 @@ const router = createRouter({
 });
 
 const userId_temp: string = "userId";
-
+/* 
 // refactor this with jwt token i think the the auch is going to be yes or no from API
 router.beforeEach((to, from) => {
   // redirect to login page if not logged in and trying to access a restricted page
@@ -117,6 +117,6 @@ router.beforeEach((to, from) => {
     alert("Login påkrævet for at bruge siden");
     return "/Login";
   }
-});
+}); */
 
 export default router;
