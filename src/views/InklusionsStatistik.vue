@@ -14,6 +14,7 @@
       </div>
 
 
+
       <h2 class="col-start-3  text-gray-700 text-xl justify-center ">Inklusionsstatistik {{ date }} </h2>
       <div class=" col-start-4 cole-span-2 flex ">
         <div class="flex content-center col-start-4">
@@ -48,21 +49,29 @@
       </div>
     </div>
     <div class="px-32">
-      <div class="grid grid-cols-4 gap-2 ">
-        <apexchart class="border-x-2" type="line" :options=" options " :series=" series "></apexchart>
-        <!--   <p v-for="       item       in       datatable       ">{{ parseDateISO(item.StartDato) }}</p -->
+      <div class="grid grid-cols-4 gap-2 mb-2">
+        <div>
+          <p class="text-gray-700 italic text-md p-1 "> Patienter inkluderet <span class="font-semibold font">i
+              alt</span>: </p>
+          <apexchart class="border-2" type="line" :options=" options2 " :series=" series "></apexchart>
+          <!--   <p v-for="       item       in       datatable       ">{{ parseDateISO(item.StartDato) }}</p -->
+        </div>
+        <div>
+          <p class="text-gray-700 italic text-md p-1 "> Patienter inkluderet i <span
+              class="font-semibold font">firma</span>
+            protokoller: </p>
 
+          <apexchart class="border-2" type="line" :options=" options2 " :series=" series2 "></apexchart>
+          <!--   <p v-for="       item       in       datatable       ">{{ parseDateISO(item.StartDato) }}</p -->
+        </div>
       </div>
       <ag-grid-vue class="w-full h-[80vh] ag-theme-balham" :columnDefs=" columnDefs " :rowData=" datatable "
         :defaultColDef=" defaultColdDef.def " rowSelection="multiple" @grid-ready=" onGridReady " animateRows="true"
-        :pagination=" false " paginationPageSize="100000" @rowClicked=" onRowClicked " tooltipShowDelay="250"
-        @modelUpdated=" onModelUpdated ">
+        @rowClicked=" onRowClicked " tooltipShowDelay="250" @modelUpdated=" onModelUpdated ">
       </ag-grid-vue>
     </div>
   </div>
 </template>
-
-
 
 <script setup lang="ts">
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
@@ -72,12 +81,17 @@ import { ref } from 'vue';
 import axios from 'axios';
 import router from "../router";
 import { useloggedInStore } from '../stores/loggedInStore';
+import parseDatatableStringToShortDates from '../helpers/ParseDatatableStringToShortDate.ts'
 
 const loginName = useloggedInStore()
 const datatable = ref('')
+const datatable2 = ref('')
 const defaultColdDef = ref({
   def: { sortable: true, filter: true, flex: 1 }
 })
+const inkl_5_aar_data = ref('')
+const inkl_5_aar_aar = ref('')
+
 
 const gridColumnApi = ref();
 const gridApi = ref(); // Optional - for accessing Grid's API
@@ -94,8 +108,20 @@ axios.post('http://localhost:5000/inkl-data', {
 }).then((response) => {
   //loop igennem response.data og pars med isoparse jeg har lavet
   datatable.value = response.data
+  parseDatatableStringToShortDates(datatable, "StartDato")
 
 });
+
+axios.post('http://localhost:5000/inkl_5_aar', {
+  RM_ID: loginName.userId
+}).then((response) => {
+  //loop igennem response.data og pars med isoparse jeg har lavet
+  datatable2.value = response.data
+  inkl_5_aar_data.value = splitarrayOfObjectsToArraysOfObjects(response.data, "Antal60")
+  inkl_5_aar_aar.value = splitarrayOfObjectsToArraysOfObjects(response.data, "YearStart")
+
+});
+
 
 const onFilterTextBoxChanged = () => {
   gridApi.value.setQuickFilter(
@@ -105,7 +131,17 @@ const onFilterTextBoxChanged = () => {
 
 function onModelUpdated(event: any) {
   rowNumbers.value = event.api.getDisplayedRowCount();
+
 }
+
+function splitarrayOfObjectsToArraysOfObjects(oldarray: Array<object>, key: string) {
+  const result = oldarray.map(itemOldarray => {
+    const resultToReturn = itemOldarray[key]
+    return resultToReturn;
+  });
+  return result;
+}
+
 
 const restoreFromHardCodedA = () => {
   var hardcodedFilter = {
@@ -185,18 +221,20 @@ function resetFilters() {
 function onRowClicked(params: any) {
   router.push('/KfeNr/' + params.node.data.KFE_Nr)
 }
-const options: any = {
-  chart: {
-    id: 'inklusion team B'
-  },
-  xaxis: {
-    categories: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2023,]
-  }
-};
 
-const series: any = [{
-  name: 'series-1',
-  data: [30, 40, 45, 50, 49, 60, 70, 91]
+
+
+
+
+//data taget 14/12/2023 ændre data til live data og ændre options til option1
+const series: Array<object> = [{
+  name: 'inkluderede patienter',
+  /* data: inkl_5_aar_data */
+  data: [532, 481, 730, 667, 785]
+}];
+const series2: Array<object> = [{
+  name: 'inkluderede patienter',
+  data: [26, 9, 8, 1, 7]
 }];
 
 //convert dataformat TODO refactor this function  
@@ -211,6 +249,31 @@ const parseDateISO = (date1: any) => {
 
 const current = new Date();
 const date = `${ current.getDate() }/${ current.getMonth() + 1 }/${ current.getFullYear() }`;
+
+const options: any = ref({
+  chart: {
+    id: 'Inklusionsstatistik '
+  },
+  xaxis: {
+    categories: [current.getFullYear() - 5, current.getFullYear() - 4, current.getFullYear() - 3, current.getFullYear() - 2, current.getFullYear() - 1, current.getFullYear()],
+  },
+  dataLabels: {
+    enabled: true,
+  }
+})
+
+const options2: any = ref({
+  chart: {
+    id: 'Inklusionsstatistik '
+  },
+  xaxis: {
+    categories: [2019, 2020, 2021, 2022, 2023],
+  },
+  dataLabels: {
+    enabled: true,
+  }
+})
+
 
 const columnDefs: Array<any> = [
   { headerName: 'Team', field: 'Diagnosegruppe', cellStyle: { 'background-color': 'rgb(114, 192, 228, 0.5)' } },
