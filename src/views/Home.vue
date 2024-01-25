@@ -6,6 +6,7 @@
           <p class="px-2 text-kfe-primary">
             <i class="fa-solid fa-flask"></i> Protokoller:
           </p>
+
           <p class="px-2 text-sm text-kfe-primary">Team A:</p>
           <template v-for="item in datatable">
             <li
@@ -125,14 +126,13 @@ import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import { useloggedInStore } from "../stores/loggedInStore";
 import axios from "axios";
+import datatable from "../data.ts";
 
 const loginName = useloggedInStore();
-const datatable = ref("");
-const datatable_search = ref("");
 const selected = ref("");
 const showTeam = ref("A");
 
-axios
+/* axios
   .post("http://localhost:5000/protokoller", {
     RM_ID: loginName.userId,
   })
@@ -147,7 +147,7 @@ axios
   })
   .catch((error) => {
     console.error(error);
-  });
+  }); */
 
 watch(selected, (newSelected) => {
   if (newSelected.toString().length > 3) {
