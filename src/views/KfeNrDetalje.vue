@@ -30,7 +30,7 @@
           @cell-value-changed="onCellValueChanged"
         >
         </ag-grid-vue>
-        <div class="flex flex-col h-72 lg:h-52 gap-1">
+        <div class="flex flex-col h-72 gap-1">
           <ag-grid-vue
             class="ag-theme-balham h-full"
             :columnDefs="columnDefs1"
