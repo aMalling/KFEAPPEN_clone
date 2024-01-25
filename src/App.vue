@@ -11,7 +11,7 @@ const router = useRouter()
 </script>
 
 <template>
-  <div class="w-full bg-kfe-base h-screen font-Roboto">
+  <div class="w-full bg-kfe-base min-h-screen font-Roboto">
     <TheToolBar v-if=" $route.path != '/Login' " />
     <div class="h-fit min-h-[83.3%]">
       <router-view :key=" $route.fullPath "></router-view>
